@@ -1,0 +1,36 @@
+#
+# DestinationEditor screen
+#
+
+<DestinationEditor>:
+    name: 'DestinationEditor'
+    title: 'Edit Destination' if app.destination else 'Add New Destination'
+
+    Bubble:
+        size_hint: (0.3, 0.1)
+        pos_hint: {'center_x': .5}
+        IconBubbleButton:
+            fa_icon: 'qrcode'
+            on_release: root.scan_qrcode()
+        IconBubbleButton:
+            fa_icon: 'map-marker'
+            on_release: root.pick_place()
+    Label:
+        canvas.before:
+            Color:
+                rgba: 1.0, 1.0, 1.0, 0.5
+            Line:
+                rounded_rectangle: (self.x, self.y, self.width, self.height, 10)
+            Rectangle:
+                pos: self.x + self.width - 166, self.y + 10
+                size: (156,24)
+                source: 'data/images/powered_by_google_dark.png'
+        size_hint_y: 0.4
+        markup: True
+        text: root.place_summary() if root.place_data else '[i]Please pick a place for your destination[/i]'
+    ButtonHBox:
+        Button:
+            text: 'Save' if app.destination else 'Add'
+            disabled: not root.place_data
+            on_release: root.save()
+

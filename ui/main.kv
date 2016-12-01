@@ -1,0 +1,58 @@
+#:kivy 1.9
+
+#:include ui/common.kv
+#:include ui/icons.kv
+#:include ui/popup.kv
+#:include ui/login.kv
+#:include ui/home.kv
+
+#:include ui/trip_manager.kv
+#:include ui/destination_manager.kv
+#:include ui/destination_editor.kv
+#:include ui/destination_notes.kv
+#:include ui/destination_spents.kv
+
+
+#
+# UI of the application
+#
+
+# Main layout
+BoxLayout:
+    orientation: 'vertical'
+
+    # background
+    canvas.before:
+        Color:
+            rgb: .6, .6, .6
+        Rectangle:
+            size: self.size
+            source: 'data/images/background.png'
+        Color:
+            rgb: 1.0, 1.0, 1.0
+        #Rectangle:
+        #    pos: self.width - 200, self.height - 100
+        #    size: (156,24)
+        #    source: 'data/images/powered_by_google_dark.png'
+
+    # The action bar on top of the app
+    ActionBar:
+        ActionView:
+            id: av
+            use_separator: True
+            # for navigation back
+            ActionPrevious:
+                title: 'Online Travel Distributor' if not sm.current_screen else sm.current_screen.title
+                with_previous: sm.has_back
+                on_release: if sm.has_back: sm.back()
+            ActionOverflow:
+            ActionButton:
+                disabled: not app.backend.authenticated
+                markup: True
+                text: u'{} {}'.format(app.backend.session('email'), fontawesome_markup('sign-out')) if app.backend.authenticated else fontawesome_markup('sign-in')
+                on_release: app.sign_out()
+
+
+    # the screen manager
+    ScreenStackManager:
+        id: sm

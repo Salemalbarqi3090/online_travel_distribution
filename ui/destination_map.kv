@@ -1,0 +1,19 @@
+#
+# Destination Map screen
+#
+
+#:import GMap gmaps.GMap
+
+<DestinationMap>:
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        GMap:
+            id: map_widget
+            size_hint: (1, 0.9)
+
+        Toolbar:
+            size_hint_y: 0.1
+            Label:
+                text: 'Longitude: {} - Latitude: {}'.format(root.longitude, root.latitude)

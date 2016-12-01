@@ -1,0 +1,51 @@
+
+# List item for a trip shown in the Trip List
+<TripListItem>:
+    ListItemButton:
+        size_hint_x: 0.45
+        text: root.item.name
+        text_size: (self.width, None)
+        height: self.texture_size[1]
+        halign: 'center'
+        shorten: True
+        on_release: root.update('name')
+    ListItemButton:
+        size_hint_x: 0.08
+        text: str(root.item.days)
+        on_release: root.update('days')
+    IconListItemLabel:
+        size_hint_x: 0.15
+        fa_icon: 'usd'
+        subscript: sum(d.budget if d.budget else 0 for d in root.item._destinations) if root.item and root.item._destinations else 0
+    ListItemButtonGroup:
+        size_hint_x: 0.32
+        IconListItemButton:
+            fa_icon: 'tasks'
+            on_release: app.show('DestinationManager', trip=root.item)
+        IconListItemButton:
+            fa_icon: 'qrcode'
+            on_release: root.generate_qrcode()
+        IconListItemButton:
+            fa_icon: 'plane'
+            disabled: root.item == app.active_trip
+            on_release: root.start()
+        IconListItemButton:
+            fa_icon: 'remove'
+            on_release: root.remove()
+
+
+# TripManager screen
+<TripManager>:
+    name: 'TripManager'
+    title: 'Your Trips'
+
+    # list of trips created by the authenticated user
+    ListHeader:
+        columns: [('Name', 45), ('Days', 8), ('Budget', 15), ('...', 32)]
+    ListView:
+        id: listview
+        adapter: SimpleListAdapter(data=app.trips, args_converter=listitem_args_converter, cls='TripListItem')
+    ButtonHBox:
+        Button:
+            text: 'Add Trip'
+            on_release: root.add_trip()

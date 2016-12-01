@@ -1,0 +1,46 @@
+
+# List item for a note shown in the Destination Notes List
+<NoteListItem>:
+    ListItemLabel:
+        size_hint_x: 0.68
+        text: root.item.content if root.item else ''
+        text_size: (self.width, None)
+        height: self.texture_size[1]
+        halign: 'center'
+        shorten: True
+    ListItemButtonGroup:
+        size_hint_x: 0.32
+        IconListItemButton:
+            fa_icon: 'edit'
+            on_release: root.edit()
+        IconListItemButton:
+            fa_icon: 'list-alt'
+            on_release: root.view()
+        IconListItemButton:
+            fa_icon: 'image'
+            on_release: root.choose_image()
+        IconListItemButton:
+            fa_icon: 'remove'
+            on_release: root.remove()
+
+
+#
+# DestinationNotes Screen
+#
+
+<DestinationNotes>:
+    name: 'DestinationNotes'
+    title: 'Notes for {}'.format(app.destination.name) if app.destination else ''
+
+    # list of notes for your destination
+    ListHeader:
+        columns: [('Note', 68), ('More...', 32)]
+    ListView:
+        id: listview
+        adapter: ListAdapter(data=root.notes, args_converter=listitem_args_converter, cls='NoteListItem')
+
+    ButtonHBox:
+        Button:
+            text: 'Add Note'
+            on_release: root.add_note()
+

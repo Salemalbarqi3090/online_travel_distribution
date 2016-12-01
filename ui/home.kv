@@ -1,0 +1,23 @@
+#
+# Home Screen
+#
+
+<Home>:
+    name: 'Home'
+    title: 'Home'
+
+    TitleLabel:
+        size_hint_y: 0.2
+        text: 'Online Travel Distribution'
+    Label:
+        size_hint_x: 1.0
+        text: 'Active trip: {trip.name}'.format(trip=app.active_trip) if app.active_trip else 'No trip is being tracking now.'
+    ButtonVBox:
+        Button:
+            text: 'Resume Trip'
+            disabled: app.active_trip is None
+            on_release: app.show('DestinationManager', trip=app.active_trip)
+        Button:
+            text: 'Manage Trips'
+            on_release: app.show('TripManager')
+

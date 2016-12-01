@@ -1,0 +1,249 @@
+#:import QRCodeWidget kivy.garden.qrcode.QRCodeWidget
+#:import ZbarQrcodeDetector utils.tagging.ZbarQrcodeDetector
+#:import platform kivy.utils.platform
+
+<WrapLabel@Label>:
+    size_hint: (1, 0.85)
+    text_size: (self.width, None)
+    height: self.texture_size[1]
+    halign: 'center'
+    markup: True
+
+<ButtonBox@BoxLayout>:
+    size_hint: (1, None)
+    height: '48dp'
+    pos_hint: {'center_x': 0.5}
+
+
+#
+# Alert popup that shows a text message
+#
+<Alert>:
+    size_hint: (0.7, 0.5)
+    auto_dismiss: True
+
+    BoxLayout:
+        orientation: 'vertical'
+        WrapLabel:
+            text: root.text
+        ButtonBox:
+            Button:
+                text: root.dismiss_label
+                on_press: root.dismiss()
+
+#
+# Popup that shows a message to ask for user confirmation
+#
+<ConfirmPopup>:
+    size_hint: (0.7, 0.5)
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: 'vertical'
+        WrapLabel:
+            text: root.text
+        ButtonBox:
+            Button:
+                text: root.confirm_label
+                on_press: root.dismiss(confirmed=True)
+            Button:
+                text: root.cancel_label
+                on_press: root.dismiss(confirmed=False)
+
+#
+# Popup that shows an text field for getting user input
+#
+<InputPopup>:
+    size_hint: (0.8, 0.6)
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: 'vertical'
+        WrapLabel:
+            text: root.text
+        TextInput:
+            id: input_field
+            text: str(root.value if root.value else root.initial)
+            size_hint_y: 0.6 if root.multiline else None
+            multiline: root.multiline
+            write_tab: root.multiline
+            input_filter: root.input_filter
+        ButtonBox:
+            Button:
+                text: root.confirm_label
+                on_press: root.dismiss(confirmed=True)
+            Button:
+                text: root.cancel_label
+                on_press: root.dismiss(confirmed=False)
+
+
+#
+# Popup that shows a spinner for getting user choosing one of the item in a list
+#
+<SelectorPopup>:
+    size_hint: (0.8, 0.6)
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: 'vertical'
+        WrapLabel:
+            text: root.text
+        Spinner:
+            id: options
+            text: str(root.value if root.value else root.initial)
+            values: root.options
+            size_hint_y: None
+            height: '42dp'
+        ButtonBox:
+            Button:
+                text: root.confirm_label
+                on_press: root.dismiss(confirmed=True)
+            Button:
+                text: root.cancel_label
+                on_press: root.dismiss(confirmed=False)
+
+
+#
+# Popup that shows a spinner for getting user input
+#
+<SpinnerPopup>:
+    size_hint: (0.8, 0.6)
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: 'vertical'
+        WrapLabel:
+            text: root.text
+        Spinner:
+            id: options
+            text: str(root.value if root.value else root.initial)
+            values: root.options
+            size_hint_y: None
+            height: '42dp'
+        TextInput:
+            id: other_value
+            text: str(root.other)
+            hint_text: 'Please enter value for other option' if options.text == 'other' else ''
+            disabled: options.text != 'other'
+            input_filter: root.other_filter
+            size_hint_y: None
+            height: '42dp'
+        ButtonBox:
+            Button:
+                text: root.confirm_label
+                on_press: root.dismiss(confirmed=True)
+            Button:
+                text: root.cancel_label
+                on_press: root.dismiss(confirmed=False)
+
+#
+# Popup that shows a list of actions (buttons) for user to choose
+#
+
+<ActionsPopup>:
+    size_hint: (0.6, 0.7)
+    auto_dismiss: True
+
+    BoxLayout:
+        orientation: 'vertical'
+        WrapLabel:
+            text: root.text
+
+
+<ImageChooserPopup>:
+    size_hint: (1.0, 1.0)
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: root.text
+            size_hint_y: 0.1
+        FileChooserIconView:
+            id: filechooser
+            filters: ['*.png', '*.jpg', '*.jpeg']
+        BoxLayout:
+            pos_hint: {'center_x': 0.5}
+            size_hint: (0.6, 0.2)
+            padding: (0, 10)
+            Button:
+                text: root.confirm_label
+                on_press: root.dismiss(confirmed=True)
+            Button:
+                text: root.cancel_label
+                on_press: root.dismiss(confirmed=False)
+
+#
+# Popup that shows a QR Code
+#
+<QRPopup>:
+    size_hint: (1.0, 1.0)
+    auto_dismiss: True
+
+    BoxLayout:
+        orientation: 'vertical'
+        WrapLabel:
+            text: root.text
+            size_hint_y: 0.15
+        QRCodeWidget:
+            id: qr_widget
+            size_hint_y: 0.7
+            show_border: False
+            data: root.data
+        ButtonBox:
+            Button:
+                text: root.share_label
+                on_press: root.dismiss(confirmed=True)
+            Button:
+                text: root.dismiss_label
+                on_press: root.dismiss()
+
+
+<QRDetectorPopup>:
+    size_hint: (1.0, 1.0)
+    auto_dismiss: True
+    on_open: detector.start()
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: root.text
+            size_hint_y: 0.1
+        ZbarQrcodeDetector:
+            id: detector
+            size_hint_y: 0.6
+        TextInput:
+            id: data
+            text: "\n".join(map(str, detector.symbols))
+            size_hint_y: 0.2
+            readonly: platform == 'android'
+            hint_text: 'Detecting QR Code...' if platform == 'android' else 'Manually input a shared URL to import'
+        BoxLayout:
+            pos_hint: {'center_x': 0.5}
+            size_hint_x: 0.3
+            size_hint_y: 0.2
+            Button:
+                text: root.confirm_label
+                on_press: root.dismiss(confirmed=True)
+            Button:
+                text: root.cancel_label
+                on_press: root.dismiss()
+
+
+<ImagePopup>:
+    size_hint: (0.8, 0.8)
+    auto_dismiss: True
+
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: root.message
+            size_hint_y: 0.2
+        AsyncImage:
+            size_hint_y: 0.6
+            source: root.source
+        Button:
+            text: root.dismiss_label
+            size_hint: (0.3, 0.2)
+            pos_hint: {'center_x': 0.5}
+            on_press: root.dismiss()

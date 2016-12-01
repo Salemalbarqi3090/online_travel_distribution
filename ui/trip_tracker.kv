@@ -1,0 +1,86 @@
+
+# List item for a destination shown in the Destination List
+<TrackedDestinationListItem>:
+    ListItemLabel:
+        size_hint_x: 0.4
+        text: root.item.name if root.item else ''
+        text_size: (self.width, None)
+        height: self.texture_size[1]
+        halign: 'center'
+        shorten: True
+    ListItemButton:
+        size_hint_x: 0.16
+        text: root.item.start_date if root.item and root.item.start_date else 'Arrive...'
+        on_release: root.arrive()
+    ListItemButton:
+        size_hint_x: 0.16
+        text: root.item.end_date if root.item and root.item.end_date else 'Leave...'
+        on_release: root.leave()
+    IconListItemButton:
+        size_hint_x: 0.12
+        fa_icon: 'usd'
+        subscript: sum(item.spent for item in root.item._spents) if root.item and root.item._spents else 0
+        on_release: app.show('DestinationSpents', tracked_destination=root.item)
+    ListItemButtonGroup:
+        size_hint_x: 0.16
+        IconListItemButton:
+            fa_icon: 'list-alt'
+            on_release: root.show_info()
+        IconListItemButton:
+            fa_icon: 'sticky-note-o'
+            subscript: len(root.item._notes) if root.item._notes else 0
+            on_release: app.show('DestinationNotes', tracked_destination=root.item)
+
+
+#
+# Popup displays actions for a chosen destination
+#
+
+<DestinationActionsPopup@ActionsPopup>:
+
+    IconButton:
+        label: 'Location'
+        fa_icon: 'map-marker'
+        on_release: root.show_map()
+    IconButton:
+        label: 'Direction'
+        fa_icon: 'map-o'
+        on_release: root.show_navigation()
+    IconButton:
+        label: 'QR Tagging'
+        fa_icon: 'qrcode'
+        on_release: root.generate_qrcode()
+    IconButton:
+        label: 'Recommend'
+        fa_icon: 'lightbulb-o'
+        on_release: root.recommend()
+
+#
+# TripTracker screen
+#
+
+<TripTracker>:
+    name: 'TripTracker'
+    title: 'Your Current Trip'
+
+    TitleLabel:
+        size_hint_y: 0.2
+        text: app.active_trip.name if app.active_trip and app.active_trip.name else ''
+    Label:
+        size_hint_y: 0.1
+        text: 'Budget of ${0.budget} in {0.days} days'.format(app.active_trip) if app.active_trip else ''
+
+    # list of destinations of the current trip
+    ListHeader:
+        columns: [('Destination', 40), ('Arrived', 16), ('Left', 16), ('Spent', 12), ('More', 16)]
+    ListView:
+        id: listview
+        adapter: ListAdapter(data=[], args_converter=listitem_args_converter, cls='TrackedDestinationListItem')
+
+    ButtonHBox:
+        Button:
+            text: 'Return Home'
+            on_release: root.return_home()
+        Button:
+            text: 'Cancel'
+            on_release: root.cancel_trip()

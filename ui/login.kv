@@ -1,0 +1,30 @@
+#
+# Login screen
+#
+
+<Login>:
+    name: 'Login'
+    title: 'Login'
+
+    TitleLabel:
+        size_hint_y: 0.2
+        text: 'Login to Online Traveller'
+    FromGridLayout:  # form to fill in email/password
+        FieldLabel:
+            text: "Email:"
+        FieldInput:
+            id: email
+            hint_text: "Email address to login"
+            text: app.backend.session('email', '')
+        FieldLabel:
+            text: "Password:"
+        PasswordInput:
+            id: password
+            hint_text: "Password to login"
+    ButtonHBox:
+        Button:
+            text: 'Login'
+            on_release: root.login()
+        Button:
+            text: 'Register'
+            on_release: root.register()

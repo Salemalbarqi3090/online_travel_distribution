@@ -1,0 +1,62 @@
+
+# List item for a destination shown in the Destination List
+<DestinationListItem>:
+    ListItemButton:
+        size_hint_x: 0.08
+        text: str(root.item.day)
+        on_release: root.update('day')
+    ListItemButton:
+        size_hint_x: 0.1
+        text: str(root.item.time)
+        on_release: root.update('time')
+    IconListItemButton:
+        size_hint_x: 0.08
+        fa_icon: root.item.transportation if root.item and root.item.transportation else 'na'
+        on_release: root.update('transportation')
+    ListItemButton:
+        size_hint_x: 0.38
+        text: root.item.name
+        text_size: (self.width, None)
+        height: self.texture_size[1]
+        halign: 'center'
+        shorten: True
+        on_release: app.show('DestinationEditor', destination=root.item)
+    IconListItemButton:
+        size_hint_x: 0.1
+        fa_icon: 'usd'
+        subscript: sum(item.spent for item in root.item._spents) if root.item and root.item._spents else 0
+        on_release: app.show('DestinationSpents', destination=root.item)
+    IconListItemButton:
+        size_hint_x: 0.1
+        fa_icon: 'sticky-note-o'
+        subscript: len(root.item._notes) if root.item._notes else 0
+        on_release: app.show('DestinationNotes', destination=root.item)
+    ListItemButtonGroup:
+        size_hint_x: 0.16
+        IconListItemButton:
+            fa_icon: 'qrcode'
+            on_release: root.generate_qrcode()
+        IconListItemButton:
+            fa_icon: 'remove'
+            on_release: root.remove()
+
+#
+# DestinationManager screen
+#
+<DestinationManager>:
+    name: 'DestinationManager'
+    title: 'Following Your Trip' if app.trip and app.trip.active else 'Manage Trip Destinations'
+
+    # list of destinations of the current trip
+    ListHeader:
+        columns: [('Day', 8), ('Time', 10), ('Trans', 8), ('Destination', 38), ('Spents', 10), ('Notes', 10), ('...', 16)]
+    ListView:
+        id: listview
+        adapter: ListAdapter(data=app.destinations, args_converter=listitem_args_converter, cls='DestinationListItem')
+    ButtonHBox:
+        Button:
+            text: 'Return Home' if app.trip and app.trip.active else 'Add Destination'
+            on_release: root.return_home() if app.trip.active else app.show('DestinationEditor', destination=None)
+        Button:
+            text: 'Recommendation'
+            on_release: root.get_recommendation()

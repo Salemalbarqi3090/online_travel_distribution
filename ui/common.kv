@@ -1,0 +1,153 @@
+#:import FontAwesomeIcons ui.FontAwesomeIcons
+
+#:import ListAdapter kivy.adapters.listadapter.ListAdapter
+#:import SimpleListAdapter kivy.adapters.simplelistadapter.SimpleListAdapter
+
+#:set listitem_args_converter lambda row_index, rec: {'index': row_index, 'item': rec}
+#:set obj2dic_args_converter lambda row_index, rec: rec.__dict__
+
+
+#
+# MyScreen
+#
+<MyScreen>:
+    BoxLayout:
+        id: content
+        orientation: 'vertical'
+        spacing: 0
+        padding: 0
+        size_hint: (1, 1)
+        height: self.height
+
+#
+# Common styles
+#
+
+<TitleLabel@Label>:
+    size: self.texture_size
+    font_size: '25sp'
+    halign: 'center'
+    size_hint_y: 0.1
+
+<FieldLabel@Label>:
+    size_hint_x: 0.3
+    text_size: self.size
+    valign: 'middle'
+
+<FieldInput@TextInput>:
+    size_hint_x: 0.7
+    multiline: False
+    write_tab: False
+
+<PasswordInput@TextInput>:
+    size_hint_x: 0.7
+    multiline: False
+    password: True
+    write_tab: False
+
+<FromGridLayout@GridLayout>:
+    size_hint_y: 0.6
+    cols: 1
+    row_default_height: '32dp'
+    row_force_default: True
+    padding: (10)
+    spacing: (10, 0)
+
+<ButtonGroupLayout@BoxLayout>:
+    orientation: 'horizontal'
+    size_hint_x: None
+    size_hint_y: 0.1
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    spacing: (10, 0)
+
+<ButtonVBox@BoxLayout>:
+    orientation: 'vertical'
+    size_hint: (1.0, None)
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    padding: '4dp'
+    spacing: 0
+
+<ButtonHBox@BoxLayout>:
+    size_hint_y: None
+    height: '48dp'
+    padding: '4dp'
+    spacing: '4dp'
+
+
+#
+# Styles for list view
+#
+
+
+<ListHeader>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '48dp'
+    spacing: '2dp'
+    padding: 0
+    canvas.before:
+        Color:
+            rgba: .1, .15, .1, .6
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<ListHeaderLabel@Label>:
+    bold: True
+    padding: (10, 0)
+    canvas.before:
+        Color:
+            rgba: .6, .6, .6, .6
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<ListItem>:
+    size_hint_y: None
+    height: '48dp'
+    spacing: '2dp'
+    canvas.before:
+        Color:
+            rgba: .1, .15, .1, .1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: .6, .6, .6, .1
+        Line:
+            points: (self.x, self.y, self.x + self.width, self.y)
+
+<ListItemButtonGroup@SelectableView+BoxLayout>:
+    size_hint_y: None
+    height: '48dp'
+
+<IconListItemButton>:
+    font_size: '32sp'
+    markup: True
+    text: u'{}[sub]{}[/sub]'.format(fontawesome_markup(self.fa_icon), self.subscript)
+    halign: 'center'
+    valign: 'middle'
+    size_hint: (0.08, None)
+    height: '48dp'
+
+<IconListItemLabel>:
+    font_size: '32sp'
+    markup: True
+    text: u'{}[sub]{}[/sub]'.format(fontawesome_markup(self.fa_icon), self.subscript)
+    halign: 'center'
+    valign: 'middle'
+    size_hint: (0.08, None)
+    height: '48dp'
+
+<IconButton>:
+    font_size: '24sp'
+    markup: True
+    text: u'{} {}[sub]{}[/sub]'.format(self.label, fontawesome_markup(self.fa_icon), self.subscript)
+    size_hint_y: None
+    height: '42dp'
+
+<IconBubbleButton>:
+    font_size: '32sp'
+    markup: True
+    text: u'{}[sub]{}[/sub]'.format(fontawesome_markup(self.fa_icon), self.subscript)
+    height: '48dp'

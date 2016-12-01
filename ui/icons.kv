@@ -1,0 +1,28 @@
+#:import FontAwesomeIcons ui.FontAwesomeIcons
+#:import fontawesome_markup ui.fontawesome_markup
+
+# Buttons using FontAwesome.ttf (data/fonts) for button icons
+
+<AwesomeButton@Button>:
+    font_name: 'FontAwesome'
+    font_size: '32sp'
+    halign: 'center'
+    valign: 'middle'
+
+<AwesomeToggleButton@ToggleButton>:
+    font_name: 'FontAwesome'
+    font_size: '16sp'
+    halign: 'center'
+    valign: 'middle'
+
+
+<AwesomeIconLabel@Label>:
+    font_name: 'FontAwesome'
+    font_size: '16sp'
+    halign: 'center'
+    valign: 'middle'
+
+<AwesomeActionButton@ActionButton>:
+    icon_name: 'home'
+    font_name: 'FontAwesome'
+    text: FontAwesomeIcons[root.icon_name]

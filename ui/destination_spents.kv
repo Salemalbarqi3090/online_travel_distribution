@@ -1,0 +1,40 @@
+
+# List item for a spent shown in the Destination Spents List
+<SpentListItem>:
+    ListItemLabel:
+        size_hint_x: 0.7
+        text: root.item.content if root.item else ''
+        text_size: (self.width, None)
+        height: self.texture_size[1]
+        halign: 'center'
+        shorten: True
+    IconListItemButton:
+        size_hint_x: 0.22
+        fa_icon: 'usd'
+        subscript: root.item.spent if root.item and root.item.spent else 0
+        on_release: root.update_spent()
+    IconListItemButton:
+        fa_icon: 'remove'
+        on_release: root.remove()
+
+
+#
+# DestinationSpents Screen
+#
+
+<DestinationSpents>:
+    name: 'DestinationSpents'
+    title: 'Spents for {}'.format(app.destination.name) if app.destination else ''
+
+    # list of spents for your destination
+    ListHeader:
+        columns: [('Note', 70), ('Spent', 22), ('...', 8)]
+    ListView:
+        id: listview
+        adapter: ListAdapter(data=root.spents, args_converter=listitem_args_converter, cls='SpentListItem')
+
+    ButtonHBox:
+        Button:
+            text: 'Add Spent'
+            on_release: root.add_spent()
+
